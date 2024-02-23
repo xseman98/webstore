@@ -10,6 +10,14 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  {
+    path: "/products/:category",
+    name: "products",
+    component: () =>
+      import(
+        /* webpackChunkName: "products" */ "../views/Products/Products.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({

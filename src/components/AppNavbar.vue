@@ -3,6 +3,12 @@
     <div class="navbar">
       <img alt="Webstore logo" src="../assets/logo.svg" width="24" />
       <v-toolbar-title>Webstore</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn text color="primary" @click="navigateToProductsPage">
+        Products
+      </v-btn>
     </div>
   </v-toolbar>
 </template>
@@ -10,6 +16,12 @@
 <script>
 export default {
   name: "AppNavbar",
+
+  methods: {
+    navigateToProductsPage() {
+      this.$router.push({ name: "products", params: { category: "all" } });
+    },
+  },
 };
 </script>
 
