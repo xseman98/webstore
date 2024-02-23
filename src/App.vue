@@ -37,24 +37,48 @@ export default {
         };
       },
       update: (data) => data.products,
+      skip() {
+        return this.didLoadedProducts;
+      },
     },
   },
 
   computed: {
-    ...mapGetters("Products", ["getProducts"]),
+    ...mapGetters("Products", ["didLoadedProducts"]),
   },
 
   methods: {
-    ...mapMutations("Products", ["setProducts"]),
+    ...mapMutations("Products", ["setDidLoadedProducts", "setProducts"]),
   },
 
   watch: {
     products: {
       handler: function () {
-        this.setProducts(this.products);
+        if (!this.didLoadedProducts) {
+          this.setProducts(this.products);
+          console.log(this.products);
+          this.setDidLoadedProducts(true);
+        }
       },
       deep: true,
     },
   },
 };
 </script>
+
+<style>
+h1,
+h2,
+h3 {
+  font-weight: 400;
+}
+
+h3 {
+  font-style: italic;
+}
+
+p {
+  font-weight: 300;
+  font-style: italic;
+}
+</style>

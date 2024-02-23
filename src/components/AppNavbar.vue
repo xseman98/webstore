@@ -1,8 +1,13 @@
 <template>
   <v-toolbar>
     <div class="navbar">
-      <img alt="Webstore logo" src="../assets/logo.svg" width="24" />
-      <v-toolbar-title>Webstore</v-toolbar-title>
+      <img
+        alt="Webstore logo"
+        src="../assets/logo.svg"
+        width="24"
+        @click="navigateToHomePage"
+      />
+      <v-toolbar-title @click="navigateToHomePage">Webstore</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -18,8 +23,12 @@ export default {
   name: "AppNavbar",
 
   methods: {
+    navigateToHomePage() {
+      this.$router.push({ name: "home" });
+    },
+
     navigateToProductsPage() {
-      this.$router.push({ name: "products", params: { category: "all" } });
+      this.$router.push({ name: "products", params: { category: "All" } });
     },
   },
 };
@@ -35,5 +44,10 @@ export default {
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
+}
+
+img:hover,
+.v-toolbar__title {
+  cursor: pointer;
 }
 </style>
