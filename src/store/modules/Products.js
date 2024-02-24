@@ -9,7 +9,6 @@ const getters = {
   getItems: (state) => state.products.items,
 
   getItemsByCategory: (state) => (categoryName) => {
-    console.log(categoryName, state.products.items);
     if (categoryName === "All") return state.products.items;
     const filteredProducts = [];
     const items = state.products.items;
