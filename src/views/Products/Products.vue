@@ -6,7 +6,6 @@
       v-if="$apollo.loading"
       indeterminate
       color="primary"
-      style="width: 10vh; height: 10vh; padding-top: 35vh; padding-bottom: 35vh"
     ></v-progress-circular>
     <div v-else class="section-layout">
       <product-card
@@ -119,5 +118,12 @@ export default {
   align-items: flex-start;
   gap: 2rem;
   width: 100%;
+}
+
+.v-progress-circular {
+  width: 10vh !important;
+  height: 10vh !important;
+  padding-top: 37vh;
+  padding-bottom: 37vh;
 }
 </style>
