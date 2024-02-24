@@ -1,7 +1,7 @@
 <template>
   <div class="main-product-layout">
     <h1>Product page</h1>
-    <!-- <category-tabs /> -->
+    <category-tabs @category-uid="handleCategoryChange" />
     <v-progress-circular
       v-if="$apollo.loading"
       indeterminate
@@ -9,7 +9,7 @@
     ></v-progress-circular>
     <div v-else class="section-layout">
       <product-card
-        v-for="product in availableProducts"
+        v-for="product in getItems"
         :key="product.uid"
         :product="product"
       />
@@ -21,7 +21,7 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { PRODUCTS_QUERY } from "@/graphql";
-// import CategoryTabs from "./components/CategoryTabs.vue";
+import CategoryTabs from "./components/CategoryTabs.vue";
 import ProductCard from "./components/ProductCard.vue";
 import ViewPagination from "./components/ViewPagination.vue";
 
@@ -29,7 +29,7 @@ export default {
   name: "ProductsView",
 
   components: {
-    // CategoryTabs,
+    CategoryTabs,
     ProductCard,
     ViewPagination,
   },
@@ -46,7 +46,8 @@ export default {
       variables() {
         return {
           search: "",
-          page: 0,
+          currentPage: 1,
+          filter: {},
         };
       },
       update: (data) => data.products,
@@ -54,25 +55,33 @@ export default {
   },
 
   computed: {
-    ...mapGetters("Products", ["didLoadedProducts", "getItemsByCategory"]),
-
-    availableProducts() {
-      return this.getItemsByCategory(this.getActiveTab());
-    },
+    ...mapGetters("Products", ["getItems"]),
   },
 
   methods: {
-    ...mapMutations("Products", ["setDidLoadedProducts", "setProducts"]),
+    ...mapMutations("Products", ["setProducts"]),
 
     getActiveTab() {
       return this.$route.params.category?.replaceAll("-", " ");
     },
 
     handlePageChange(page) {
-      this.setDidLoadedProducts(false);
       this.$apollo.queries.products.fetchMore({
         variables: {
           currentPage: page,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+
+          return fetchMoreResult;
+        },
+      });
+    },
+
+    handleCategoryChange(uid) {
+      this.$apollo.queries.products.fetchMore({
+        variables: {
+          filter: uid === "*" ? {} : { category_uid: { eq: uid } },
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
@@ -87,7 +96,12 @@ export default {
     products: {
       handler: function () {
         this.setProducts(this.products);
-        this.setDidLoadedProducts(true);
+      },
+      deep: true,
+    },
+    "$route.params.uid": {
+      handler: function () {
+        this.handleCategoryChange(decodeURIComponent(this.$route.params.uid));
       },
       deep: true,
     },
