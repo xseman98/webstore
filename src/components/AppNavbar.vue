@@ -5,14 +5,23 @@
         alt="Webstore logo"
         src="../assets/logo.svg"
         width="24"
-        @click="navigateToHomePage"
+        @click="navigateTo('home', {})"
       />
-      <v-toolbar-title @click="navigateToHomePage">Webstore</v-toolbar-title>
+      <v-toolbar-title @click="navigateTo('home', {})">
+        Webstore
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn text color="primary" @click="navigateToProductsPage">
-        Products
+      <v-btn
+        v-for="(link, index) in links"
+        :key="index"
+        :text="!isCurrent(link.name)"
+        :outlined="isCurrent(link.name)"
+        color="primary"
+        @click="link.click"
+      >
+        {{ link.name }}
       </v-btn>
     </div>
   </v-toolbar>
@@ -22,13 +31,32 @@
 export default {
   name: "AppNavbar",
 
+  data() {
+    return {
+      links: [
+        {
+          name: "home",
+          click: () => this.navigateTo("home", {}),
+        },
+        {
+          name: "products",
+          click: () =>
+            this.navigateTo("products", { category: "All", uid: "*" }),
+        },
+      ],
+    };
+  },
+
   methods: {
-    navigateToHomePage() {
-      this.$router.push({ name: "home" });
+    navigateTo(name, params) {
+      this.$router.push({
+        name,
+        params,
+      });
     },
 
-    navigateToProductsPage() {
-      this.$router.push({ name: "products", params: { category: "All" } });
+    isCurrent(name) {
+      return this.$route.name === name;
     },
   },
 };
