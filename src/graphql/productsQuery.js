@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const PRODUCTS_QUERY = gql`
-  query Products($search: String) {
-    products(search: $search) {
+  query Products($search: String, $currentPage: Int) {
+    products(search: $search, currentPage: $currentPage) {
       total_count
       items {
         uid
@@ -15,6 +15,7 @@ export const PRODUCTS_QUERY = gql`
           url
         }
         categories {
+          uid
           name
           level
         }
