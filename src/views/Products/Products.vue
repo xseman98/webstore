@@ -1,8 +1,14 @@
 <template>
   <div class="main-product-layout">
     <h1>Product page</h1>
-    <category-tabs />
-    <div class="section-layout">
+    <!-- <category-tabs /> -->
+    <v-progress-circular
+      v-if="$apollo.loading"
+      indeterminate
+      color="primary"
+      style="width: 10vh; height: 10vh; padding-top: 35vh; padding-bottom: 35vh"
+    ></v-progress-circular>
+    <div v-else class="section-layout">
       <product-card
         v-for="product in availableProducts"
         :key="product.uid"
@@ -12,24 +18,47 @@
         :stock-status="product.stock_status"
       />
     </div>
+    <view-pagination @page-change="handlePageChange" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import CategoryTabs from "./components/CategoryTabs.vue";
+import { mapGetters, mapMutations } from "vuex";
+import { PRODUCTS_QUERY } from "@/graphql";
+// import CategoryTabs from "./components/CategoryTabs.vue";
 import ProductCard from "./components/ProductCard.vue";
+import ViewPagination from "./components/ViewPagination.vue";
 
 export default {
   name: "ProductsView",
 
   components: {
-    CategoryTabs,
+    // CategoryTabs,
     ProductCard,
+    ViewPagination,
+  },
+
+  data() {
+    return {
+      products: {},
+    };
+  },
+
+  apollo: {
+    products: {
+      query: PRODUCTS_QUERY,
+      variables() {
+        return {
+          search: "",
+          page: 0,
+        };
+      },
+      update: (data) => data.products,
+    },
   },
 
   computed: {
-    ...mapGetters("Products", ["getItemsByCategory"]),
+    ...mapGetters("Products", ["didLoadedProducts", "getItemsByCategory"]),
 
     availableProducts() {
       return this.getItemsByCategory(this.getActiveTab());
@@ -37,8 +66,34 @@ export default {
   },
 
   methods: {
+    ...mapMutations("Products", ["setDidLoadedProducts", "setProducts"]),
+
     getActiveTab() {
       return this.$route.params.category?.replaceAll("-", " ");
+    },
+
+    handlePageChange(page) {
+      this.setDidLoadedProducts(false);
+      this.$apollo.queries.products.fetchMore({
+        variables: {
+          currentPage: page,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+
+          return fetchMoreResult;
+        },
+      });
+    },
+  },
+
+  watch: {
+    products: {
+      handler: function () {
+        this.setProducts(this.products);
+        this.setDidLoadedProducts(true);
+      },
+      deep: true,
     },
   },
 };
