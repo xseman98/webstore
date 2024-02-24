@@ -27,6 +27,7 @@ export default {
         return {
           search: "",
           currentPage: 1,
+          filter: {},
         };
       },
       update: (data) => data.products.page_info,
@@ -45,6 +46,28 @@ export default {
           return fetchMoreResult;
         },
       });
+    },
+
+    handleCategoryChange(uid) {
+      this.$apollo.queries.page.fetchMore({
+        variables: {
+          filter: uid === "*" ? {} : { category_uid: { eq: uid } },
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+
+          return fetchMoreResult;
+        },
+      });
+    },
+  },
+
+  watch: {
+    "$route.params.uid": {
+      handler: function () {
+        this.handleCategoryChange(decodeURIComponent(this.$route.params.uid));
+      },
+      deep: true,
     },
   },
 };
