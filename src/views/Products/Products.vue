@@ -11,10 +11,7 @@
       <product-card
         v-for="product in availableProducts"
         :key="product.uid"
-        :title="product.name"
-        :price="product.price_range.maximum_price.final_price"
-        :image="product.image"
-        :stock-status="product.stock_status"
+        :product="product"
       />
     </div>
     <view-pagination @page-change="handlePageChange" />
