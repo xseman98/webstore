@@ -1,13 +1,14 @@
 <template>
   <div class="main-product-layout">
     <h1>Product page</h1>
-    <category-tabs @category-uid="handleCategoryChange" />
+    <category-tabs />
     <v-progress-circular
       v-if="$apollo.loading"
       indeterminate
       color="primary"
     ></v-progress-circular>
     <div v-else class="section-layout">
+      <category-filters />
       <product-card
         v-for="product in getItems"
         :key="product.uid"
@@ -22,6 +23,7 @@
 import { mapGetters, mapMutations } from "vuex";
 import { PRODUCTS_QUERY } from "@/graphql";
 import CategoryTabs from "./components/CategoryTabs.vue";
+import CategoryFilters from "./components/CategoryFilters.vue";
 import ProductCard from "./components/ProductCard.vue";
 import ViewPagination from "./components/ViewPagination.vue";
 
@@ -30,6 +32,7 @@ export default {
 
   components: {
     CategoryTabs,
+    CategoryFilters,
     ProductCard,
     ViewPagination,
   },
@@ -134,7 +137,7 @@ export default {
 .v-progress-circular {
   width: 10vh !important;
   height: 10vh !important;
-  padding-top: 37vh;
-  padding-bottom: 37vh;
+  padding-top: 30vh;
+  padding-bottom: 35vh;
 }
 </style>
