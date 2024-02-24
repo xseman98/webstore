@@ -1,20 +1,30 @@
 <template>
   <div class="main-tabs-layout">
-    <h3>Categories</h3>
-    <v-tabs v-model="tab" :show-arrows="$vuetify.breakpoint.width < 860">
+    <h3>Available Categories</h3>
+    <v-progress-linear
+      v-if="availableCategories.length === 0"
+      indeterminate
+      color="primary"
+    ></v-progress-linear>
+    <v-tabs
+      v-else
+      fixed-tabs
+      v-model="tab"
+      :show-arrows="$vuetify.breakpoint.width < 860"
+    >
       <v-tab
-        v-for="(category, index) in getAvailableCategories"
-        :key="index"
+        v-for="category in availableCategories"
+        :key="category.uid"
         @click="navigateToCategoryPage(category)"
       >
-        {{ category }}
+        {{ category.name }}
       </v-tab>
     </v-tabs>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { CATEGORIES_QUERY } from "@/graphql";
 
 export default {
   name: "CategoryTabs",
@@ -22,19 +32,63 @@ export default {
   data() {
     return {
       tab: null,
+      categories: {},
+      availableCategories: [],
+      skip: false,
     };
   },
 
-  computed: {
-    ...mapGetters("Products", ["getNumberOfItems", "getAvailableCategories"]),
+  apollo: {
+    categories: {
+      query: CATEGORIES_QUERY,
+      variables() {
+        return {
+          search: "",
+        };
+      },
+      update: (data) => data.products.items,
+      skip() {
+        return this.skip;
+      },
+    },
   },
 
   methods: {
     navigateToCategoryPage(category) {
       this.$router.push({
         name: "products",
-        params: { category: category.replaceAll(" ", "-") },
+        params: {
+          category: encodeURIComponent(category.name),
+          uid: encodeURIComponent(category.uid),
+        },
       });
+    },
+  },
+
+  watch: {
+    categories: {
+      handler: function () {
+        if (!this.categories) return categoriesSet;
+
+        const categoriesSet = new Set(["All#*"]);
+
+        this.categories.forEach((item) => {
+          item.categories.forEach((category) => {
+            categoriesSet.add(`${category.name}#${category.uid}`);
+          });
+        });
+
+        this.availableCategories = Array.from(categoriesSet).map(
+          (categoryString) => {
+            return {
+              name: categoryString.split("#")[0],
+              uid: categoryString.split("#")[1],
+            };
+          }
+        );
+        this.skip = true;
+      },
+      deep: true,
     },
   },
 };
@@ -47,5 +101,6 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+  width: 100%;
 }
 </style>
