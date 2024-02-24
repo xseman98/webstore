@@ -1,6 +1,5 @@
 <template>
   <div class="main-tabs-layout">
-    <h3>Available Categories</h3>
     <v-progress-linear
       v-if="availableCategories.length === 0"
       indeterminate

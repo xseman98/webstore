@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="400" elevation="8">
+  <v-card max-width="400" elevation="6">
     <v-img height="200px" :alt="product.image.label" :src="product.image.url">
     </v-img>
 
