@@ -1,8 +1,7 @@
 <template>
   <div class="full-screen-component">
     <div class="centered-element">
-      <img alt="Webstore logo" src="../assets/logo.svg" width="44" />
-      <p class="loader-title">Webstore</p>
+      <p class="loader-title">Loading...</p>
     </div>
     <div class="bottom-element">
       <svg
@@ -42,9 +41,10 @@ export default {
 
 <style scoped>
 .full-screen-component {
-  position: relative;
+  position: fixed;
   width: 100%;
   height: 100%;
+  bottom: 0;
 }
 
 .centered-element {

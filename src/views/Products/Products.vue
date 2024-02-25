@@ -2,11 +2,7 @@
   <div class="main-product-layout">
     <h1>Products</h1>
     <category-tabs />
-    <v-progress-circular
-      v-if="$apollo.loading"
-      indeterminate
-      color="primary"
-    ></v-progress-circular>
+    <app-loader v-if="$apollo.loading" />
     <div v-else class="section-layout">
       <category-filters />
       <product-card
@@ -26,6 +22,7 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import { PRODUCTS_QUERY } from "@/graphql";
+import AppLoader from "@/components/AppLoader.vue";
 import CategoryTabs from "./components/CategoryTabs.vue";
 import CategoryFilters from "./components/CategoryFilters.vue";
 import ProductCard from "./components/ProductCard.vue";
@@ -35,6 +32,7 @@ export default {
   name: "ProductsView",
 
   components: {
+    AppLoader,
     CategoryTabs,
     CategoryFilters,
     ProductCard,
