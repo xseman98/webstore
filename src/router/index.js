@@ -11,7 +11,7 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/products?category=:category&uid=:uid",
+    path: "/products/category=:category/uid=:uid",
     name: "products",
     component: () =>
       import(

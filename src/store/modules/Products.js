@@ -23,6 +23,10 @@ const getters = {
             item.price_range.maximum_price.final_price.value <= priceTo;
     });
   },
+
+  getPageInfo: (state) => state.products.page_info,
+
+  getTotalCount: (state) => state.products.total_count,
 };
 
 const actions = {};

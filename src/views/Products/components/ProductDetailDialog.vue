@@ -26,7 +26,6 @@
               <p v-html="product.description.html" style="font-size: 24px"></p>
             </v-card-text>
 
-            <v-spacer></v-spacer>
             <v-divider></v-divider>
 
             <v-card-actions>
@@ -101,6 +100,9 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
+}
+.v-card__text {
+  margin-top: 1rem;
 }
 .custom-size {
   max-width: 600px;

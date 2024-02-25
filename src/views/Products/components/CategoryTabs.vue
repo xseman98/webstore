@@ -1,15 +1,10 @@
 <template>
   <div class="main-tabs-layout">
-    <v-progress-linear
-      v-if="availableCategories.length === 0"
-      indeterminate
-      color="primary"
-    ></v-progress-linear>
     <v-tabs
-      v-else
+      v-if="availableCategories.length > 0"
       fixed-tabs
       v-model="tab"
-      :show-arrows="$vuetify.breakpoint.width < 860"
+      show-arrows
     >
       <v-tab
         v-for="category in availableCategories"
@@ -46,6 +41,9 @@ export default {
         };
       },
       update: (data) => data.products.items,
+      error(error) {
+        console.error(error);
+      },
       skip() {
         return this.skip;
       },

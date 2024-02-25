@@ -49,6 +49,7 @@ export default {
 
   methods: {
     navigateTo(name, params) {
+      if (this.isCurrent(name)) return;
       this.$router.push({
         name,
         params,

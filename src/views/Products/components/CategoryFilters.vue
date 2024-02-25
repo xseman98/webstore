@@ -7,7 +7,12 @@
       min="0 USD"
       :hint="`$${priceRange[0]} - $${priceRange[1]}`"
       persistent-hint
-    ></v-range-slider>
+      style="width: 320px"
+    >
+      <template v-slot:thumb-label="props">
+        {{ `$${props.value}` }}
+      </template>
+    </v-range-slider>
     <v-btn-toggle v-model="availability" borderless>
       <v-btn color="primary" :outlined="availability === 1"> In stock </v-btn>
       <v-btn color="primary" :outlined="availability === 0">
@@ -29,6 +34,8 @@ export default {
       availability: undefined,
     };
   },
+
+  mounted() {},
 
   methods: {
     ...mapMutations("Products", ["setFilters"]),

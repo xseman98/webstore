@@ -8,6 +8,11 @@ export const PRODUCTS_QUERY = gql`
   ) {
     products(search: $search, currentPage: $currentPage, filter: $filter) {
       total_count
+      page_info {
+        page_size
+        current_page
+        total_pages
+      }
       items {
         uid
         name
