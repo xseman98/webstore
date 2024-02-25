@@ -20,14 +20,19 @@ export default {
 </script>
 
 <style>
-h1,
-h2,
-h3 {
+h1 {
+  font-size: clamp(2em, 5vw, 4em);
+  line-height: clamp(1.2, 3vw, 2);
+  font-weight: 300;
+}
+
+h2 {
   font-weight: 400;
 }
 
 h3 {
   font-style: italic;
+  font-weight: 400;
 }
 
 p {
