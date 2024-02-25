@@ -18,11 +18,11 @@
           <div class="info-div">
             <v-card-title>
               <h1>{{ product.name }}</h1>
-              <p>{{ getProductCategories }}</p>
+              <v-chip :color="getStockColor" dark>{{ getStockStatus }}</v-chip>
             </v-card-title>
 
             <v-card-text>
-              <v-chip :color="getStockColor" dark>{{ getStockStatus }}</v-chip>
+              <p>{{ getProductCategories }}</p>
               <p v-html="product.description.html" style="font-size: 24px"></p>
             </v-card-text>
 

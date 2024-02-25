@@ -1,6 +1,6 @@
 <template>
   <div class="main-product-layout">
-    <h1>Product page</h1>
+    <h1>Products</h1>
     <category-tabs />
     <v-progress-circular
       v-if="$apollo.loading"
@@ -54,6 +54,9 @@ export default {
         };
       },
       update: (data) => data.products,
+      error(error) {
+        console.error(error);
+      },
     },
   },
 
