@@ -15,7 +15,11 @@
         :product="product"
       />
     </div>
-    <view-pagination @page-change="handlePageChange" />
+    <view-pagination
+      v-if="!$apollo.loading"
+      :page-info="getPageInfo"
+      @page-change="handlePageChange"
+    />
   </div>
 </template>
 
@@ -61,7 +65,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("Products", ["getItems"]),
+    ...mapGetters("Products", ["getItems", "getPageInfo"]),
   },
 
   methods: {
@@ -140,7 +144,6 @@ export default {
 .v-progress-circular {
   width: 10vh !important;
   height: 10vh !important;
-  padding-top: 30vh;
-  padding-bottom: 35vh;
+  padding-top: 50vh;
 }
 </style>

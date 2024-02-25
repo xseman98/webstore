@@ -1,73 +1,35 @@
 <template>
   <div class="text-center">
     <v-pagination
-      v-model="page.current_page"
-      :length="page.total_pages"
-      @input="showPage"
+      v-model="getCurrentPage"
+      :length="getTotalPages"
     ></v-pagination>
   </div>
 </template>
 
 <script>
-import { PAGE_QUERY } from "@/graphql";
-
 export default {
   name: "ViewPagination",
 
-  data() {
-    return {
-      page: {},
-    };
+  props: {
+    pageInfo: {
+      type: Object,
+      required: false,
+    },
   },
 
-  apollo: {
-    page: {
-      query: PAGE_QUERY,
-      variables() {
-        return {
-          search: "",
-          currentPage: 1,
-          filter: {},
-        };
+  computed: {
+    getCurrentPage: {
+      get() {
+        return this.pageInfo ? this.pageInfo.current_page : 1;
       },
-      update: (data) => data.products.page_info,
-    },
-  },
-
-  methods: {
-    showPage(page) {
-      this.$emit("page-change", page);
-      this.$apollo.queries.page.fetchMore({
-        variables: {
-          currentPage: page,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev;
-          return fetchMoreResult;
-        },
-      });
-    },
-
-    handleCategoryChange(uid) {
-      this.$apollo.queries.page.fetchMore({
-        variables: {
-          filter: uid === "*" ? {} : { category_uid: { eq: uid } },
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev;
-
-          return fetchMoreResult;
-        },
-      });
-    },
-  },
-
-  watch: {
-    "$route.params.uid": {
-      handler: function () {
-        this.handleCategoryChange(decodeURIComponent(this.$route.params.uid));
+      set(newValue) {
+        this.$emit("page-change", newValue);
       },
-      deep: true,
+    },
+
+    getTotalPages() {
+      return this.pageInfo ? this.pageInfo?.total_pages : 1;
     },
   },
 };
