@@ -52,6 +52,9 @@ export default {
 
   methods: {
     navigateToCategoryPage(category) {
+      if (decodeURIComponent(this.$route.params.category) === category.name)
+        return;
+
       this.$router.push({
         name: "products",
         params: {
