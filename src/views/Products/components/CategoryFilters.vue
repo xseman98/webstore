@@ -35,7 +35,10 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.priceRange = [0, 1000];
+    this.availability = undefined;
+  },
 
   methods: {
     ...mapMutations("Products", ["setFilters"]),
