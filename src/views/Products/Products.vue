@@ -1,6 +1,29 @@
 <template>
   <div class="main-product-layout">
     <h1>Products</h1>
+    <v-text-field
+      v-model="search"
+      type="text"
+      outlined
+      placeholder="Looking for something particular?"
+      clearable
+      style="width: 50%; min-width: 320px"
+      @keydown="handleSearch"
+      @click:clear="handleResetSearch"
+      :readonly="$apollo.loading"
+    >
+      <template v-slot:append-outer>
+        <v-btn
+          :disabled="$apollo.loading && search === ''"
+          :loading="$apollo.loading && search !== ''"
+          color="primary"
+          @click="handleSearch"
+        >
+          <v-icon left>mdi-magnify</v-icon>
+          Search
+        </v-btn>
+      </template>
+    </v-text-field>
     <category-tabs />
     <app-loader v-if="$apollo.loading" />
     <div v-else class="section-layout">
@@ -41,6 +64,7 @@ export default {
 
   data() {
     return {
+      search: "",
       products: {},
     };
   },
@@ -73,6 +97,40 @@ export default {
       return this.$route.params.category?.replaceAll("-", " ");
     },
 
+    handleSearch(e) {
+      if (e.type === "click" || e.key === "Enter") {
+        const uid = decodeURIComponent(this.$route.params.uid);
+        this.$apollo.queries.products.fetchMore({
+          variables: {
+            search: this.search,
+            currentPage: 1,
+            filter: uid === "*" ? {} : { category_uid: { eq: uid } },
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev;
+
+            return fetchMoreResult;
+          },
+        });
+      }
+    },
+
+    handleResetSearch() {
+      const uid = decodeURIComponent(this.$route.params.uid);
+      this.$apollo.queries.products.fetchMore({
+        variables: {
+          search: "",
+          currentPage: 1,
+          filter: uid === "*" ? {} : { category_uid: { eq: uid } },
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+
+          return fetchMoreResult;
+        },
+      });
+    },
+
     handlePageChange(page) {
       this.$apollo.queries.products.fetchMore({
         variables: {
@@ -89,6 +147,7 @@ export default {
     handleCategoryChange(uid) {
       this.$apollo.queries.products.fetchMore({
         variables: {
+          search: this.search,
           filter: uid === "*" ? {} : { category_uid: { eq: uid } },
         },
         updateQuery: (prev, { fetchMoreResult }) => {
